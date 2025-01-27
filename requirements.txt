@@ -1,0 +1,13 @@
+yfinance==0.2.52  # Use the version you need
+streamlit
+requests
+streamlit-autorefresh
+pytz
+pandas
+numpy
+tabulate
+streamlit-extras
+matplotlib
+seaborn
+nest_asyncio
+beautifulsoup4
