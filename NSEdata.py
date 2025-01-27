@@ -11,10 +11,13 @@ bulk_deals_file = st.sidebar.file_uploader("Upload Bulk Deals CSV", type=["csv"]
 block_deals_file = st.sidebar.file_uploader("Upload Block Deals CSV", type=["csv"])
 short_selling_file = st.sidebar.file_uploader("Upload Short-Selling CSV", type=["csv"])
 
-# Function to load CSV data
+# Function to load CSV data and normalize column names
 def load_csv(file):
     if file is not None:
-        return pd.read_csv(file)
+        df = pd.read_csv(file)
+        # Normalize column names: strip spaces and convert to lowercase
+        df.columns = df.columns.str.strip().str.lower()
+        return df
     return pd.DataFrame()
 
 # Load data
@@ -46,41 +49,29 @@ else:
 # Add filters for Bulk Deals
 st.sidebar.header("Bulk Deals Filters")
 if not bulk_deals_df.empty:
-    # Check if the "Symbol" column exists
-    if "Symbol" in bulk_deals_df.columns:
-        selected_stock_bulk = st.sidebar.text_input("Enter Stock Symbol for Bulk Deals (e.g., INFY):")
-        if selected_stock_bulk:
-            filtered_bulk_df = bulk_deals_df[bulk_deals_df["Symbol"] == selected_stock_bulk]
-            st.write(f"### Filtered Bulk Deals Data for {selected_stock_bulk}")
-            st.dataframe(filtered_bulk_df)
-    else:
-        st.error("The 'Symbol' column is missing in the Bulk Deals CSV file.")
+    selected_stock_bulk = st.sidebar.text_input("Enter Stock Symbol for Bulk Deals (e.g., INFY):")
+    if selected_stock_bulk:
+        filtered_bulk_df = bulk_deals_df[bulk_deals_df["symbol"] == selected_stock_bulk]
+        st.write(f"### Filtered Bulk Deals Data for {selected_stock_bulk}")
+        st.dataframe(filtered_bulk_df)
 
 # Add filters for Block Deals
 st.sidebar.header("Block Deals Filters")
 if not block_deals_df.empty:
-    # Check if the "Symbol" column exists
-    if "Symbol" in block_deals_df.columns:
-        selected_stock_block = st.sidebar.text_input("Enter Stock Symbol for Block Deals (e.g., INFY):")
-        if selected_stock_block:
-            filtered_block_df = block_deals_df[block_deals_df["Symbol"] == selected_stock_block]
-            st.write(f"### Filtered Block Deals Data for {selected_stock_block}")
-            st.dataframe(filtered_block_df)
-    else:
-        st.error("The 'Symbol' column is missing in the Block Deals CSV file.")
+    selected_stock_block = st.sidebar.text_input("Enter Stock Symbol for Block Deals (e.g., INFY):")
+    if selected_stock_block:
+        filtered_block_df = block_deals_df[block_deals_df["symbol"] == selected_stock_block]
+        st.write(f"### Filtered Block Deals Data for {selected_stock_block}")
+        st.dataframe(filtered_block_df)
 
 # Add filters for Short-Selling
 st.sidebar.header("Short-Selling Filters")
 if not short_selling_df.empty:
-    # Check if the "Symbol" column exists
-    if "Symbol" in short_selling_df.columns:
-        selected_stock_short = st.sidebar.text_input("Enter Stock Symbol for Short-Selling (e.g., INFY):")
-        if selected_stock_short:
-            filtered_short_df = short_selling_df[short_selling_df["Symbol"] == selected_stock_short]
-            st.write(f"### Filtered Short-Selling Data for {selected_stock_short}")
-            st.dataframe(filtered_short_df)
-    else:
-        st.error("The 'Symbol' column is missing in the Short-Selling CSV file.")
+    selected_stock_short = st.sidebar.text_input("Enter Stock Symbol for Short-Selling (e.g., INFY):")
+    if selected_stock_short:
+        filtered_short_df = short_selling_df[short_selling_df["symbol"] == selected_stock_short]
+        st.write(f"### Filtered Short-Selling Data for {selected_stock_short}")
+        st.dataframe(filtered_short_df)
 
 # Add download buttons
 st.sidebar.header("Download Data")
@@ -116,27 +107,18 @@ st.write("### Visualizations")
 
 # Bulk Deals Visualization (example: total deals by stock)
 if not bulk_deals_df.empty:
-    if "Symbol" in bulk_deals_df.columns:
-        st.write("#### Total Bulk Deals by Stock")
-        bulk_deals_count = bulk_deals_df["Symbol"].value_counts()
-        st.bar_chart(bulk_deals_count)
-    else:
-        st.error("The 'Symbol' column is missing in the Bulk Deals CSV file. Cannot generate visualization.")
+    st.write("#### Total Bulk Deals by Stock")
+    bulk_deals_count = bulk_deals_df["symbol"].value_counts()
+    st.bar_chart(bulk_deals_count)
 
 # Block Deals Visualization (example: total deals by stock)
 if not block_deals_df.empty:
-    if "Symbol" in block_deals_df.columns:
-        st.write("#### Total Block Deals by Stock")
-        block_deals_count = block_deals_df["Symbol"].value_counts()
-        st.bar_chart(block_deals_count)
-    else:
-        st.error("The 'Symbol' column is missing in the Block Deals CSV file. Cannot generate visualization.")
+    st.write("#### Total Block Deals by Stock")
+    block_deals_count = block_deals_df["symbol"].value_counts()
+    st.bar_chart(block_deals_count)
 
 # Short-Selling Visualization (example: total short-selling by stock)
 if not short_selling_df.empty:
-    if "Symbol" in short_selling_df.columns:
-        st.write("#### Total Short-Selling by Stock")
-        short_selling_count = short_selling_df["Symbol"].value_counts()
-        st.bar_chart(short_selling_count)
-    else:
-        st.error("The 'Symbol' column is missing in the Short-Selling CSV file. Cannot generate visualization.")
+    st.write("#### Total Short-Selling by Stock")
+    short_selling_count = short_selling_df["symbol"].value_counts()
+    st.bar_chart(short_selling_count)
